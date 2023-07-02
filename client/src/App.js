@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState } from 'react';
+import axios from 'axios';
+import "./App.css"
+import {BiSearch} from "react-icons/bi"
+import Footer from './Footer';
 function App() {
+  
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('/api/search', { query });
+      setResults(response.data);
+    } catch (err) {
+      console.error('Error searching:', err);
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          harshita 
-        </a>
-      </header>
+    <>
+   
+    <div className='App'>
+    <h1> se@rch eng!ne </h1>
+      <form  className = "form" onSubmit={handleSearch}>
+        <input  className=' inputdata' type="text" placeholder='search here' value={query} onChange={(e) => setQuery(e.target.value)} />
+        <span className ='btn' ><BiSearch size ={22}/> </span>
+      </form>
+
+      <ul>
+        {results.map((item) => (
+          <li key={item._id}>{item.content}</li>
+        ))}
+      </ul>
+      
     </div>
-  );
+    <Footer/>
+    </>
+  )
 }
 
 export default App;
